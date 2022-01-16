@@ -1,4 +1,7 @@
 package com.practice.codingtestapp.repository
 
-class Repository {
+import com.practice.codingtestapp.api.ApiService
+
+class Repository(private val apiService: ApiService) {
+    suspend fun getWorkouts() = apiService.getWorkouts()
 }
