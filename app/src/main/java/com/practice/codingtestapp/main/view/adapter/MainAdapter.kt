@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.practice.codingtestapp.R
-import com.practice.codingtestapp.api.Assignment
-import com.practice.codingtestapp.api.Workout
 import com.practice.codingtestapp.databinding.ItemMainBinding
+import com.practice.codingtestapp.db.model.Assignment
+import com.practice.codingtestapp.db.model.Workout
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -92,8 +92,8 @@ class MainAdapter @Inject constructor() : RecyclerView.Adapter<MainAdapter.ViewH
         /**
          * FIXME: Fix and refactor use the Recyclerview to render assignment items.
          */
-        private fun showAssignments(assignments: List<Assignment>) {
-            if (assignments.isNotEmpty()) {
+        private fun showAssignments(assignments: List<Assignment>?) {
+            if (assignments != null && assignments.isNotEmpty()) {
                 // Display item one
                 val itemOne = assignments[0]
                 binding.itemOne.viewWorkout.visibility = VISIBLE

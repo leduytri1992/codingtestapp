@@ -4,10 +4,13 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity
+@Entity(tableName = "assignment")
 data class Assignment(
     @PrimaryKey(autoGenerate = false)
     val id: String,
+
+    @ColumnInfo(name = "workout_id")
+    val workoutId: String?,
 
     @ColumnInfo(name = "title")
     val title: String,
@@ -19,5 +22,5 @@ data class Assignment(
     val totalExercise: Int,
 
     @ColumnInfo(name = "completed")
-    val completed: Boolean
+    var completed: Boolean
 )

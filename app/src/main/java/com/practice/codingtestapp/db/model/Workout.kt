@@ -2,16 +2,19 @@ package com.practice.codingtestapp.db.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 
-@Entity
+@Entity(tableName = "workout")
 data class Workout(
     @PrimaryKey(autoGenerate = false)
-    val id: String,
+    var id: String,
 
     @ColumnInfo(name = "day")
-    val day: Int,
+    var day: Int,
 
-    @ColumnInfo(name = "assignments")
-    val assignments: List<Assignment>
-)
+    @Ignore
+    var assignments: List<Assignment>?
+) {
+    constructor() : this("", 0, null)
+}

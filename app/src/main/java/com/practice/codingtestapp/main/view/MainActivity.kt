@@ -2,12 +2,11 @@ package com.practice.codingtestapp.main.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.LinearLayout
 import androidx.activity.viewModels
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.practice.codingtestapp.api.Assignment
+import com.practice.codingtestapp.api.AssignmentResponse
 import com.practice.codingtestapp.databinding.ActivityMainBinding
+import com.practice.codingtestapp.db.model.Assignment
 import com.practice.codingtestapp.main.view.adapter.MainAdapter
 import com.practice.codingtestapp.main.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -57,6 +56,6 @@ class MainActivity : AppCompatActivity(), MainAdapter.AssignmentListener {
     }
 
     override fun onItemClicked(item: Assignment) {
-        TODO("Not yet implemented")
+        mainViewModel.updateAssignment(item.id, !item.completed)
     }
 }
