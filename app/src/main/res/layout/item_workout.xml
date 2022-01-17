@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/view_workout"
     android:layout_width="match_parent"
     android:layout_height="72dp"
-    android:layout_marginStart="8dp"
-    android:layout_marginEnd="21dp"
-    android:layout_marginBottom="8dp"
-    android:background="@drawable/bg_item_workout_completed"
+    android:background="@drawable/bg_item_workout_gray"
     android:paddingStart="16dp"
     android:paddingTop="16dp"
     android:paddingEnd="24dp"
-    android:paddingBottom="16dp">
+    android:paddingBottom="16dp"
+    android:visibility="visible">
 
     <LinearLayout
         android:id="@+id/view_content"
@@ -29,7 +28,7 @@
             android:ellipsize="end"
             android:fontFamily="@font/opensans_bold"
             android:maxLines="1"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="@dimen/middle" />
 
         <TextView
@@ -37,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/opensans_regular"
-            android:textColor="@color/white"
+            android:textColor="@color/black_200"
             android:textSize="@dimen/normal" />
 
     </LinearLayout>
