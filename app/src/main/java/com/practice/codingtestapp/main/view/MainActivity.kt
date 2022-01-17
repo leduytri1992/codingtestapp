@@ -55,7 +55,10 @@ class MainActivity : AppCompatActivity(), MainAdapter.AssignmentListener {
         })
     }
 
-    override fun onItemClicked(item: Assignment) {
-        mainViewModel.updateAssignment(item.id, !item.completed)
+    /**
+     * On event clicked item assignment.
+     */
+    override fun onItemClicked(id: String, completed: Boolean) {
+        mainViewModel.updateAssignment(id, completed)
     }
 }

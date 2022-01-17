@@ -7,7 +7,6 @@ import com.practice.codingtestapp.db.model.Workout
 
 class Mapper {
     companion object {
-
         /**
          * Mapping from workout response to model.
          *

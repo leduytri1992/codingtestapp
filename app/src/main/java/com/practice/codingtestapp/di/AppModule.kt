@@ -5,7 +5,7 @@ import androidx.room.Room
 import com.practice.codingtestapp.api.ApiService
 import com.practice.codingtestapp.db.AppDatabase
 import com.practice.codingtestapp.db.dao.WorkoutDao
-import com.practice.codingtestapp.repository.Repository
+import com.practice.codingtestapp.repository.RepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -65,5 +65,5 @@ object AppModule {
     @Singleton
     @Provides
     fun providesRepository(apiService: ApiService, workoutDao: WorkoutDao) =
-        Repository(apiService, workoutDao)
+        RepositoryImpl(apiService, workoutDao)
 }

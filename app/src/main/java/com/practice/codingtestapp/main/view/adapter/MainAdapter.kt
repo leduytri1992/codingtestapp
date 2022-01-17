@@ -1,5 +1,6 @@
 package com.practice.codingtestapp.main.view.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View.*
 import android.view.ViewGroup
@@ -7,6 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.practice.codingtestapp.R
 import com.practice.codingtestapp.databinding.ItemMainBinding
+import com.practice.codingtestapp.databinding.ItemWorkoutBinding
 import com.practice.codingtestapp.db.model.Assignment
 import com.practice.codingtestapp.db.model.Workout
 import timber.log.Timber
@@ -42,18 +44,10 @@ class MainAdapter @Inject constructor() : RecyclerView.Adapter<MainAdapter.ViewH
     inner class ViewHolder(private val binding: ItemMainBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        init {
-            /*binding.workoutsRecyclerview.apply {
-                layoutManager = CustomLinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-                isNestedScrollingEnabled = false
-                adapter = workoutsAdapter
-            }*/
-        }
-
         fun bind(workout: Workout) {
             binding.apply {
                 workout.also { (id, day, assignments) ->
-                    Timber.d("data: $id, $day, $assignments")
+                    Timber.d("Workout: $id, $day, $assignments")
                     showDay(day)
                     showDate(day)
                     showAssignments(assignments)
@@ -96,45 +90,37 @@ class MainAdapter @Inject constructor() : RecyclerView.Adapter<MainAdapter.ViewH
             if (assignments != null && assignments.isNotEmpty()) {
                 // Display item one
                 val itemOne = assignments[0]
-                binding.itemOne.viewWorkout.visibility = VISIBLE
-                binding.itemOne.tvTitle.text = itemOne.title
-                "${itemOne.totalExercise} exercises".also {
-                    binding.itemOne.tvStatus.text = it
-                }
+                updateAssignmentItem(binding.itemOne, itemOne)
+                // item clicked event
                 binding.itemOne.viewWorkout.setOnClickListener {
                     Timber.d("clicked ${itemOne.id}")
-                    binding.itemOne.viewWorkout.setBackgroundResource(R.drawable.bg_item_workout_completed)
-                    binding.itemOne.imgIconCompleted.visibility = VISIBLE
-                    binding.itemOne.tvTitle.apply {
-                        setTextColor(ContextCompat.getColor(context, R.color.white))
-                    }
-                    binding.itemOne.tvStatus.apply {
-                        setTextColor(ContextCompat.getColor(context, R.color.white))
-                    }
 
-                    listener.onItemClicked(itemOne)
+                    if (itemOne.completed) {
+                        itemOne.completed = false
+                        updateAssignmentItem(binding.itemOne, itemOne)
+                    } else {
+                        itemOne.completed = true
+                        updateAssignmentItem(binding.itemOne, itemOne)
+                    }
+                    listener.onItemClicked(itemOne.id, itemOne.completed)
                 }
 
                 // Display item two
                 if (assignments.size > 1) {
                     val itemTwo = assignments[1]
-                    binding.itemTwo.viewWorkout.visibility = VISIBLE
-                    binding.itemTwo.tvTitle.text = itemTwo.title
-                    "${itemTwo.totalExercise} exercises".also {
-                        binding.itemTwo.tvStatus.text = it
-                    }
+                    updateAssignmentItem(binding.itemTwo, itemTwo)
+                    // item clicked event
                     binding.itemTwo.viewWorkout.setOnClickListener {
                         Timber.d("clicked ${itemTwo.id}")
-                        binding.itemTwo.viewWorkout.setBackgroundResource(R.drawable.bg_item_workout_completed)
-                        binding.itemTwo.imgIconCompleted.visibility = VISIBLE
-                        binding.itemTwo.tvTitle.apply {
-                            setTextColor(ContextCompat.getColor(context, R.color.white))
-                        }
-                        binding.itemTwo.tvStatus.apply {
-                            setTextColor(ContextCompat.getColor(context, R.color.white))
-                        }
 
-                        listener.onItemClicked(itemTwo)
+                        if (itemTwo.completed) {
+                            itemTwo.completed = false
+                            updateAssignmentItem(binding.itemTwo, itemTwo)
+                        } else {
+                            itemTwo.completed = true
+                            updateAssignmentItem(binding.itemTwo, itemTwo)
+                        }
+                        listener.onItemClicked(itemTwo.id, itemTwo.completed)
                     }
                 }
             } else {
@@ -142,9 +128,39 @@ class MainAdapter @Inject constructor() : RecyclerView.Adapter<MainAdapter.ViewH
                 binding.itemTwo.viewWorkout.visibility = GONE
             }
         }
+
+        @SuppressLint("SetTextI18n")
+        private fun updateAssignmentItem(itemView: ItemWorkoutBinding, assignment: Assignment) {
+            // update title
+            itemView.viewWorkout.visibility = VISIBLE
+            itemView.tvTitle.text = assignment.title
+
+            // Update background color, icon, text views
+            if (assignment.completed) {
+                itemView.viewWorkout.setBackgroundResource(R.drawable.bg_item_workout_completed)
+                itemView.imgIconCompleted.visibility = VISIBLE
+                itemView.tvTitle.apply {
+                    setTextColor(ContextCompat.getColor(context, R.color.white))
+                }
+                itemView.tvStatus.apply {
+                    text = context.getText(R.string.completed)
+                    setTextColor(ContextCompat.getColor(context, R.color.white))
+                }
+            } else {
+                itemView.viewWorkout.setBackgroundResource(R.drawable.bg_item_workout_gray)
+                itemView.imgIconCompleted.visibility = GONE
+                itemView.tvTitle.apply {
+                    setTextColor(ContextCompat.getColor(context, R.color.black))
+                }
+                itemView.tvStatus.apply {
+                    text = context.getString(R.string.exercises, assignment.totalExercise)
+                    setTextColor(ContextCompat.getColor(context, R.color.black_200))
+                }
+            }
+        }
     }
 
     interface AssignmentListener {
-        fun onItemClicked(item: Assignment)
+        fun onItemClicked(id: String, completed: Boolean)
     }
 }
