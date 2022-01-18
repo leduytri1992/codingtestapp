@@ -18,4 +18,4 @@ gradlew
 gradlew.bat
 app/.gitignore
 gradle/wrapper/gradle-wrapper.jar
-app/release/
+app/release/output-metadata.json
