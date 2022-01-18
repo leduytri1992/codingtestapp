@@ -115,23 +115,32 @@ class MainAdapter @Inject constructor() : RecyclerView.Adapter<MainAdapter.ViewH
          */
         private fun showAssignments(assignments: List<Assignment>?, day: Int) {
             if (assignments != null && assignments.isNotEmpty()) {
-                // Display item one
-                val itemOne = assignments[0]
-                updateStatus(binding.itemOne, itemOne)
-                updateAssignmentItem(binding.itemOne, itemOne, day)
-                handleEventItemClicked(binding.itemOne, itemOne, day)
+                // show item one
+                var item = assignments[0]
+                showItemView(binding.itemOne, item, day)
 
-                // Display item two
+                // show item two
                 if (assignments.size > 1) {
-                    val itemTwo = assignments[1]
-                    updateStatus(binding.itemTwo, itemTwo)
-                    updateAssignmentItem(binding.itemTwo, itemTwo, day)
-                    handleEventItemClicked(binding.itemTwo, itemTwo, day)
+                    item = assignments[1]
+                    showItemView(binding.itemTwo, item, day)
+                }
+
+                // show item three
+                if (assignments.size > 2) {
+                    item = assignments[2]
+                    showItemView(binding.itemThree, item, day)
                 }
             } else {
                 binding.itemOne.viewWorkout.visibility = GONE
                 binding.itemTwo.viewWorkout.visibility = GONE
+                binding.itemThree.viewWorkout.visibility = GONE
             }
+        }
+
+        private fun showItemView(itemView: ItemWorkoutBinding, item: Assignment, day: Int) {
+            updateStatus(itemView, item)
+            updateAssignmentItem(itemView, item, day)
+            handleEventItemClicked(itemView, item, day)
         }
 
         @SuppressLint("WrongConstant")

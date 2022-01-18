@@ -57,6 +57,14 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:visibility="gone" />
+
+        <include
+            android:id="@+id/item_three"
+            layout="@layout/item_workout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:visibility="gone" />
     </LinearLayout>
 
     <View
