@@ -8,7 +8,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.practice.codingtestapp.databinding.ActivityMainBinding
 import com.practice.codingtestapp.db.model.Workout
 import com.practice.codingtestapp.main.view.adapter.MainAdapter
+import com.practice.codingtestapp.main.view.adapter.MainAdapter.Companion.DEFAULT
 import com.practice.codingtestapp.main.viewmodel.MainViewModel
+import com.practice.codingtestapp.utils.Utils
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -28,10 +30,20 @@ class MainActivity : AppCompatActivity(), MainAdapter.AssignmentListener {
         setUpObservers()
     }
 
+    override fun onResume() {
+        super.onResume()
+        // Check current day changed in system, then notify data changed
+        val today = mainAdapter.today
+        if (today != DEFAULT && today != Utils.getCurrentDayOfWeek()) {
+            with(mainAdapter) {
+                notifyDataChanged()
+            }
+        }
+    }
+
     /**
      * Setup and initialize UI.
      */
-    @SuppressLint("NotifyDataSetChanged")
     private fun setUpUI() {
         mainAdapter.listener = this
         binding.mainRecyclerview.apply {
@@ -39,7 +51,7 @@ class MainActivity : AppCompatActivity(), MainAdapter.AssignmentListener {
             adapter = mainAdapter
             with(adapter as MainAdapter) {
                 workouts = initWorkouts()
-                notifyDataSetChanged()
+                notifyDataChanged()
             }
         }
     }
@@ -47,7 +59,6 @@ class MainActivity : AppCompatActivity(), MainAdapter.AssignmentListener {
     /**
      * Setup observers workout live data.
      */
-    @SuppressLint("NotifyDataSetChanged")
     private fun setUpObservers() {
         mainViewModel.getWorkouts().observe(this, { workoutsList ->
             workoutsList?.let {
@@ -55,7 +66,7 @@ class MainActivity : AppCompatActivity(), MainAdapter.AssignmentListener {
                     binding.mainRecyclerview.apply {
                         with(adapter as MainAdapter) {
                             workouts = it
-                            notifyDataSetChanged()
+                            notifyDataChanged()
                         }
                     }
                 }

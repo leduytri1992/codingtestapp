@@ -25,7 +25,7 @@ class MainViewModel @Inject constructor(private val repository: RepositoryImpl) 
     /**
      * Load list workouts from repository.
      */
-    private fun loadWorkouts() {
+    fun loadWorkouts() {
         viewModelScope.launch {
             val workouts = repository.loadWorkouts()
             workoutsLiveData.postValue(workouts)

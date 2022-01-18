@@ -3,7 +3,6 @@ package com.practice.codingtestapp.db.dao
 import androidx.room.*
 import com.practice.codingtestapp.db.model.Assignment
 import com.practice.codingtestapp.db.model.Workout
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface WorkoutDao {

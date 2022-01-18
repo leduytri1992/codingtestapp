@@ -5,6 +5,7 @@ import android.text.Html
 import android.view.LayoutInflater
 import android.view.View.*
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -20,7 +21,7 @@ import javax.inject.Inject
 class MainAdapter @Inject constructor() : RecyclerView.Adapter<MainAdapter.ViewHolder>() {
     var workouts: List<Workout> = emptyList()
     lateinit var listener: AssignmentListener
-    val today = Utils.getCurrentDayOfWeek()
+    var today: Int = DEFAULT
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
@@ -45,6 +46,12 @@ class MainAdapter @Inject constructor() : RecyclerView.Adapter<MainAdapter.ViewH
 
     override fun getItemCount(): Int = workouts.size
 
+    @SuppressLint("NotifyDataSetChanged")
+    fun notifyDataChanged() {
+        today = Utils.getCurrentDayOfWeek()
+        notifyDataSetChanged()
+    }
+
     inner class ViewHolder(private val binding: ItemMainBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
@@ -61,12 +68,11 @@ class MainAdapter @Inject constructor() : RecyclerView.Adapter<MainAdapter.ViewH
 
         private fun showDay(day: Int) {
             if (day == today) {
-                binding.tvDay.apply {
-                    setTextColor(ContextCompat.getColor(context, R.color.purple))
-                }
-                binding.tvDate.apply {
-                    setTextColor(ContextCompat.getColor(context, R.color.purple))
-                }
+                setTextColor(binding.tvDay, R.color.purple)
+                setTextColor(binding.tvDate, R.color.purple)
+            } else {
+                setTextColor(binding.tvDay, R.color.black)
+                setTextColor(binding.tvDate, R.color.black_200)
             }
 
             binding.tvDay.apply {
@@ -99,7 +105,13 @@ class MainAdapter @Inject constructor() : RecyclerView.Adapter<MainAdapter.ViewH
         }
 
         /**
+         * Show assignment items of workout, and handle event clicked items.
+         * <p>
+         * Know issue: Limit number items show on UI.
          * FIXME: Fix and refactor use the Recyclerview to render assignment items.
+         *
+         * @param assignments the list assignment items
+         * @param day the day of the workout data
          */
         private fun showAssignments(assignments: List<Assignment>?, day: Int) {
             if (assignments != null && assignments.isNotEmpty()) {
@@ -107,54 +119,14 @@ class MainAdapter @Inject constructor() : RecyclerView.Adapter<MainAdapter.ViewH
                 val itemOne = assignments[0]
                 updateStatus(binding.itemOne, itemOne)
                 updateAssignmentItem(binding.itemOne, itemOne, day)
-
-                // item clicked event
-                binding.itemOne.viewWorkout.setOnClickListener {
-                    Timber.d("clicked ${itemOne.id}")
-
-                    if (itemOne.status == Status.MISSED.value ||
-                        itemOne.status == Status.COMPLETED.value ||
-                        day > today
-                    ) {
-                        return@setOnClickListener
-                    }
-
-                    if (itemOne.completed) {
-                        itemOne.completed = false
-                        updateAssignmentItem(binding.itemOne, itemOne, day)
-                    } else {
-                        itemOne.completed = true
-                        updateAssignmentItem(binding.itemOne, itemOne, day)
-                    }
-                    listener.onItemClicked(itemOne.id, itemOne.completed)
-                }
+                handleEventItemClicked(binding.itemOne, itemOne, day)
 
                 // Display item two
                 if (assignments.size > 1) {
                     val itemTwo = assignments[1]
                     updateStatus(binding.itemTwo, itemTwo)
                     updateAssignmentItem(binding.itemTwo, itemTwo, day)
-
-                    // item clicked event
-                    binding.itemTwo.viewWorkout.setOnClickListener {
-                        Timber.d("clicked ${itemTwo.id}")
-
-                        if (itemTwo.status == Status.MISSED.value ||
-                            itemTwo.status == Status.COMPLETED.value ||
-                            day > today
-                        ) {
-                            return@setOnClickListener
-                        }
-
-                        if (itemTwo.completed) {
-                            itemTwo.completed = false
-                            updateAssignmentItem(binding.itemTwo, itemTwo, day)
-                        } else {
-                            itemTwo.completed = true
-                            updateAssignmentItem(binding.itemTwo, itemTwo, day)
-                        }
-                        listener.onItemClicked(itemTwo.id, itemTwo.completed)
-                    }
+                    handleEventItemClicked(binding.itemTwo, itemTwo, day)
                 }
             } else {
                 binding.itemOne.viewWorkout.visibility = GONE
@@ -197,38 +169,79 @@ class MainAdapter @Inject constructor() : RecyclerView.Adapter<MainAdapter.ViewH
             if (assignment.completed || assignment.status == Status.COMPLETED.value) {
                 itemView.viewWorkout.setBackgroundResource(R.drawable.bg_item_workout_completed)
                 itemView.imgIconCompleted.visibility = VISIBLE
-                itemView.tvTitle.apply {
-                    setTextColor(ContextCompat.getColor(context, R.color.white))
-                }
+                setTextColor(itemView.tvTitle, R.color.white)
                 itemView.tvStatus.apply {
                     text = context.getText(R.string.completed)
-                    setTextColor(ContextCompat.getColor(context, R.color.white))
+                    setTextColor(this, R.color.white)
                 }
             } else {
                 itemView.viewWorkout.setBackgroundResource(R.drawable.bg_item_workout_gray)
                 itemView.imgIconCompleted.visibility = GONE
-                itemView.tvTitle.apply {
-                    if (day <= today) {
-                        setTextColor(ContextCompat.getColor(context, R.color.black))
-                    } else {
-                        setTextColor(ContextCompat.getColor(context, R.color.gray_200))
-                    }
+                if (day <= today) {
+                    setTextColor(itemView.tvTitle, R.color.black)
+                } else {
+                    setTextColor(itemView.tvTitle, R.color.gray_200)
                 }
                 itemView.tvStatus.apply {
                     if (assignment.status != Status.MISSED.value) {
                         text = context.getString(R.string.exercises, assignment.totalExercise)
                     }
                     if (day <= today) {
-                        setTextColor(ContextCompat.getColor(context, R.color.black_200))
+                        setTextColor(this, R.color.black_200)
                     } else {
-                        setTextColor(ContextCompat.getColor(context, R.color.gray_200))
+                        setTextColor(this, R.color.gray_200)
                     }
                 }
+            }
+        }
+
+        private fun setTextColor(textView: TextView, colorId: Int) {
+            textView.apply {
+                setTextColor(ContextCompat.getColor(context, colorId))
+            }
+        }
+
+        /**
+         * Handle event clicked on assignment item.
+         *
+         * @param itemView the view show item data
+         * @param item the assignment item data
+         * @param day the day of the workout data
+         */
+        private fun handleEventItemClicked(itemView: ItemWorkoutBinding, item: Assignment, day: Int) {
+            itemView.viewWorkout.setOnClickListener {
+                Timber.d("clicked item: ${item.id}")
+
+                if (item.status == Status.MISSED.value ||
+                    item.status == Status.COMPLETED.value ||
+                    day > today
+                ) {
+                    return@setOnClickListener
+                }
+
+                if (item.completed) {
+                    item.completed = false
+                    updateAssignmentItem(itemView, item, day)
+                } else {
+                    item.completed = true
+                    updateAssignmentItem(itemView, item, day)
+                }
+                listener.onItemClicked(item.id, item.completed)
             }
         }
     }
 
     interface AssignmentListener {
+        /**
+         * On item clicked event listener.
+         *
+         * @param id the {@link String} Assignment id
+         * @param completed the {@link Boolean} completed info
+         */
         fun onItemClicked(id: String, completed: Boolean)
+    }
+
+    companion object {
+        const val DEFAULT = -1
     }
 }
