@@ -1,4 +1,4 @@
-# codingtestapp
+# Coding Test app
 
 Build out a calendar to manage working training. 1) View the title and status of current week’s workouts, 2) mark them as completed (locally).
 
