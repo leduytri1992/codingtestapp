@@ -2,6 +2,7 @@ package com.practice.codingtestapp.di
 
 import android.content.Context
 import androidx.room.Room
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.practice.codingtestapp.api.ApiService
 import com.practice.codingtestapp.db.AppDatabase
 import com.practice.codingtestapp.db.dao.WorkoutDao
@@ -43,6 +44,7 @@ object AppModule {
     fun providesRetrofit(okHttpClient: OkHttpClient): Retrofit =
         Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
+            .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .baseUrl(BASE_URL)
             .client(okHttpClient)
             .build()

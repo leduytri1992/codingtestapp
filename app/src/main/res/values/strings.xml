@@ -11,4 +11,5 @@
     <string name="completed">Completed</string>
     <string name="assigned">Assigned</string>
     <string name="exercises">%1$d exercises</string>
+    <string name="missed_exercises"><![CDATA[<font color=#FF0000>Missed</font>]]> • %1$d exercises</string>
 </resources>
