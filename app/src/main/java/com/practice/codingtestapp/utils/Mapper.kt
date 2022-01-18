@@ -15,7 +15,7 @@ class Mapper {
         fun WorkoutResponse.toWorkout(assignments: List<Assignment>) = Workout(
             id = id,
             day = day,
-            assignments = assignments // use to render UI
+            assignments = assignments
         )
 
         /**

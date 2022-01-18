@@ -4,13 +4,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practice.codingtestapp.db.model.Workout
-import com.practice.codingtestapp.repository.RepositoryImpl
+import com.practice.codingtestapp.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(private val repository: RepositoryImpl) : ViewModel() {
+class MainViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
     private var workoutsLiveData = MutableLiveData<List<Workout>>()
 
     init {
@@ -25,7 +25,7 @@ class MainViewModel @Inject constructor(private val repository: RepositoryImpl) 
     /**
      * Load list workouts from repository.
      */
-    fun loadWorkouts() {
+    private fun loadWorkouts() {
         viewModelScope.launch {
             val workouts = repository.loadWorkouts()
             workoutsLiveData.postValue(workouts)

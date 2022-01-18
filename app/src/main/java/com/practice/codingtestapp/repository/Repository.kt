@@ -5,7 +5,7 @@ import com.practice.codingtestapp.db.model.Workout
 interface Repository {
 
     /**
-     * Load workouts data api service first time, and then cached to local db.
+     * Load workouts data from api service first time, and then cached to local db.
      *
      * @return {@link List<Workout>}
      */

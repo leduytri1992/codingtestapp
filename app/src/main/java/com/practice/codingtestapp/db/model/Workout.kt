@@ -14,7 +14,7 @@ data class Workout(
     var day: Int,
 
     @Ignore
-    var assignments: List<Assignment>?
+    var assignments: List<Assignment>? // use to render UI
 ) {
     constructor() : this("", 0, null)
 }
